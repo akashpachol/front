@@ -51,7 +51,7 @@ const SubCategory = ({ isOpen, toggleModal }) => {
         
         const response:any = await postSubCategory(values);
         if (response.status === "success") {
-          setIsOpen(!isOpen)
+          toggleModal()
         } else {
           console.log('hai',response.message);
         }

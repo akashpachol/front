@@ -6,7 +6,9 @@ function Accordion() {
   const [activeIndex, setActiveIndex] = useState(-1); 
   const [categoryData, setCategoryData] = useState([]);
   const [subCategoryData, setSubCategoryData] = useState({});
-  
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+
   useEffect(() => {
     getDetails();
   }, []);
@@ -42,12 +44,24 @@ function Accordion() {
 
   const toggleAccordion = (index, categoryId) => {
     if (activeIndex === index) {
-      setActiveIndex(-1); 
+      setActiveIndex(-1);
+      setSelectedCategory(null);
     } else {
       setActiveIndex(index);
-      fetchSubCategory(categoryId); 
+      setSelectedCategory(categoryId);
+      fetchSubCategory(categoryId);
     }
   };
+
+  const handleSubCategoryClick = (subCategory) => {
+    setSelectedSubCategory(subCategory);
+  };
+
+
+  
+
+
+
 
   return (
     <div id="accordion-collapse" data-accordion="collapse">
@@ -79,7 +93,13 @@ function Accordion() {
             <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
               {activeIndex === index && subCategoryData[category._id] ? (
                 subCategoryData[category._id].map((subCategory, subIndex) => (
-                  <p key={subIndex}>{subCategory.name}</p>
+                  <p 
+                    key={subIndex} 
+                    onClick={() => handleSubCategoryClick(subCategory)}
+                    className={`cursor-pointer ${selectedSubCategory && selectedSubCategory._id === subCategory._id ? 'font-bold' : ''}`}
+                  >
+                    {subCategory.name}
+                  </p>
                 ))
               ) : (
                 <p className="text-gray-500 dark:text-gray-400">Loading...</p>
