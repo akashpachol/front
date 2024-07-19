@@ -9,5 +9,6 @@ export const authUrls = {
   export const userUrls = {
     category: "/category",
     subCategory: "/subCategory",
-  
+    product: "/product",
+    productDetails: "/productDetails",
   };

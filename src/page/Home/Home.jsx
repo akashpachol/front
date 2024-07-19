@@ -1,15 +1,16 @@
-import { useState } from "react";
+import {  useState } from "react";
 import BreadCrums from "../Layout/BreadCrums";
 import Navbar from "../Layout/Navbar";
 import Category from "./Category";
 import Content from "./Content";
 import SubCategory from "./SubCategory";
+import { useNavigate } from "react-router-dom";
 
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
+  const navigate=useNavigate()
 
   const toggleCategoryModal = () => {
 
@@ -19,6 +20,9 @@ const Home = () => {
 
     setIsOpen(!isOpen);
   };
+
+
+
   return (
     <div>
         <Navbar />
@@ -30,14 +34,14 @@ const Home = () => {
 <button className="action_button" onClick={toggleCategoryModal}>Add category</button>
 <button className="action_button" onClick={toggleModal}>Add sub category</button>
 
-<button className="action_button">Add product</button>
+<button className="action_button"onClick={()=>navigate('/product')}>Add product</button>
 
             </div>
         </div>
 <Content />
 </div>
-{isModalOpen&&(<Category setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} />)} 
-{isOpen&&(<SubCategory setIsOpen={setIsOpen} isOpen={isOpen} />)} 
+{isModalOpen&&(<Category toggleCategoryModal={toggleCategoryModal} isModalOpen={isModalOpen}/>)} 
+{isOpen&&(<SubCategory toggleModal={toggleModal} isOpen={isOpen}  />)} 
 
     </div>
   );

@@ -1,7 +1,7 @@
-import { ApiError } from "../../../utils/types";
+
 import { api } from "./api";
 
-export const apiCall = async <T>(method: string, url: string, data: T) => {
+export const apiCall = async(method, url, data) => {
   try {
     let response;
 
@@ -13,8 +13,8 @@ export const apiCall = async <T>(method: string, url: string, data: T) => {
       response = await api.patch(url, data);
     }
     return Promise.resolve(response?.data);
-  } catch (error: unknown) {
-    const apiError = error as ApiError;
-    return Promise.reject(apiError.response.data);
+  } catch (error) {
+    const apiError = error ;
+    return Promise.reject(apiError);
   }
 };

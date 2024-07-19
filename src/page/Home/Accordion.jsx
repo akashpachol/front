@@ -1,83 +1,93 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
+import { getCategory, getSubCategory } from "../../Service/user/apiMethod";
 
 function Accordion() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(-1); 
+  const [categoryData, setCategoryData] = useState([]);
+  const [subCategoryData, setSubCategoryData] = useState({});
+  
+  useEffect(() => {
+    getDetails();
+  }, []);
 
-  const toggleAccordion = (index) => {
+  const getDetails = async () => {
+    try {
+      const response = await getCategory();
+      if (response.data) {
+        setCategoryData(response.data);
+      } else {
+        console.log("something wrong");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchSubCategory = async (categoryId) => {
+    try {
+      const response = await getSubCategory(categoryId);
+      if (response.data) {
+        setSubCategoryData((prevData) => ({
+          ...prevData,
+          [categoryId]: response.data,
+        }));
+      } else {
+        console.log("something wrong");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const toggleAccordion = (index, categoryId) => {
     if (activeIndex === index) {
-      setActiveIndex(-1); // Close the currently open accordion
+      setActiveIndex(-1); 
     } else {
       setActiveIndex(index);
+      fetchSubCategory(categoryId); 
     }
   };
 
   return (
     <div id="accordion-collapse" data-accordion="collapse">
-      <div className="accordion-item">
-        <h2 id="accordion-collapse-heading-1">
-          <button
-            type="button"
-            className="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
-            onClick={() => toggleAccordion(1)}
-            aria-expanded={activeIndex === 1}
-            aria-controls="accordion-collapse-body-1"
+      {categoryData.map((category, index) => (
+        <div className="accordion-item" key={index}>
+          <h2 id={`accordion-collapse-heading-${index}`}>
+            <button
+              type="button"
+              className="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+              onClick={() => toggleAccordion(index, category._id)} 
+              aria-expanded={activeIndex === index}
+              aria-controls={`accordion-collapse-body-${index}`}
+            >
+              <span>{category.name}</span>
+              {activeIndex === index ? (
+                <FaChevronUp className="w-3 h-3 rotate-180" />
+              ) : (
+                <FaChevronDown className="w-3 h-3" />
+              )}
+            </button>
+          </h2>
+          <div
+            id={`accordion-collapse-body-${index}`}
+            className={`transition-all duration-300 ${
+              activeIndex === index ? "block" : "hidden"
+            }`}
+            aria-labelledby={`accordion-collapse-heading-${index}`}
           >
-            <span>What is Flowbite?</span>
-            {activeIndex === 1 ? (
-              <FaChevronUp className="w-3 h-3 rotate-180" />
-            ) : (
-              <FaChevronDown className="w-3 h-3" />
-            )}
-          </button>
-        </h2>
-        <div
-          id="accordion-collapse-body-1"
-          className={`transition-all duration-300 ${
-            activeIndex === 1 ? "block" : "hidden"
-          }`}
-          aria-labelledby="accordion-collapse-heading-1"
-        >
-          <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
-            <p className="text-gray-500 dark:text-gray-400">
-              Check out this guide to learn how to{" "}
-            </p>
+            <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+              {activeIndex === index && subCategoryData[category._id] ? (
+                subCategoryData[category._id].map((subCategory, subIndex) => (
+                  <p key={subIndex}>{subCategory.name}</p>
+                ))
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-
-      <div className="accordion-item">
-        <h2 id="accordion-collapse-heading-2">
-          <button
-            type="button"
-            className="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
-            onClick={() => toggleAccordion(2)}
-            aria-expanded={activeIndex === 2}
-            aria-controls="accordion-collapse-body-2"
-          >
-            <span>Is there a Figma file available?</span>
-            {activeIndex === 2 ? (
-              <FaChevronUp className="w-3 h-3 rotate-180" />
-            ) : (
-              <FaChevronDown className="w-3 h-3" />
-            )}
-          </button>
-        </h2>
-        <div
-          id="accordion-collapse-body-2"
-          className={`transition-all duration-300 ${
-            activeIndex === 2 ? "block" : "hidden"
-          }`}
-          aria-labelledby="accordion-collapse-heading-2"
-        >
-          <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
-            <p className="text-gray-500 dark:text-gray-400">
-              based on the utility classes from Tailwind CSS and components from
-              Flowbite.
-            </p>
-          </div>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }

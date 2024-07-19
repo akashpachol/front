@@ -1,10 +1,39 @@
 import { FaHeart, FaStar } from "react-icons/fa";
 import image from '../../assets/Frame143.png'
 import Accordion from "./Accordion";
+import { getProduct } from "../../Service/user/apiMethod";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 const Content = () => {
-  let a = [1, 2, 3, 4, 5, 6, 7, 8];
+  const navigate=useNavigate()
+
+  const [productData, setProductData] = useState([]);
+  useEffect(() => {
+    getDetails();
+  }, []);
+
+  const getDetails = async () => {
+  
+    try {
+      const response = await getProduct();
+      if (response.data) {
+        setProductData(response.data);
+
+   
+      } else {
+    console.log('something wrong');
+    
+      }
+    } catch (error) {
+     console.log(error);
+     
+    }
+  };
+
+
+
   return (
     <div className="w-full  flex  ">
       <div className="w-1/5  px-3 py-4 sticky top-4 h-screen overflow-y-auto">
@@ -13,7 +42,7 @@ const Content = () => {
 
       <div className="w-4/5   p-5 ">
         <div className="grid grid-cols-3 gap-4 p-4">
-          {a.map((value) => (
+          {productData.map((value) => (
             <div
               key={value}
               className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
@@ -33,7 +62,7 @@ const Content = () => {
               <div className="px-5 pb-5">
                 <a href="#">
                   <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                    Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport
+                   {value.name}
                   </h5>
                 </a>
                 <div className="flex items-center mt-2.5 mb-5">
@@ -49,10 +78,14 @@ const Content = () => {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                    $599
-                  </span>
+                  {value.variants.map((data,index)=>(
+  <span key={index} className="text-3xl font-bold text-gray-900 dark:text-white">
+                 {data.price}   
+  </span>
+                  ))}
+                
                 </div>
+                <button className="action_button" onClick={()=>{navigate('/ProductSection',{state:value._id})}} >view</button>
               </div>
             </div>
           ))}
