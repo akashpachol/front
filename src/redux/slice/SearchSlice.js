@@ -12,7 +12,7 @@ const searchSlice = createSlice({
   initialState,
   reducers: {
     searchData: (state, action) => {
-      console.log(action,'fff');
+      console.log(action,'fffdssd');
       state.data = action.payload.data;
  
 

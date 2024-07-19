@@ -37,12 +37,12 @@ const Content = () => {
      
     }
   };
-
+console.log(search,"hjdfdj");
   useEffect(() => {
     const debounce = setTimeout(() => {
       const filtered = productData.filter((productValue) =>
         Object.values(productValue).some((value) =>
-          value && value.toString().toLowerCase().includes(search.toLowerCase())
+          value && value.toString().toLowerCase().includes(search.data.toLowerCase())
         )
       );
       setFilteredRows(filtered);
@@ -51,7 +51,6 @@ const Content = () => {
     return () => clearTimeout(debounce);
   }, [ productData,search]);
 
- 
 
 
   return (

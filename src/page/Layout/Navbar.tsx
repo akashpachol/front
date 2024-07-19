@@ -4,14 +4,16 @@ import { CiHeart, CiShoppingCart } from "react-icons/ci";
 import {  Outlet, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import WishList from "../Home/WishList";
+import { useDispatch } from "react-redux";
+import { searchData } from "../../redux/slice/SearchSlice";
 
 
 const Navbar = () => {
 
 
 
+  const dispatch = useDispatch();
 
-  const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [menuDropdown, setMenuDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -64,7 +66,9 @@ const Navbar = () => {
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
+    console.log('jfdkfjdk',searchQuery);
     
+    dispatch(searchData({data:searchQuery}))
   };
 
   return (
