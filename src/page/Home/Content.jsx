@@ -1,5 +1,6 @@
 import { FaHeart, FaStar } from "react-icons/fa";
 import image from '../../assets/Frame143.png'
+import TablePagination from '@mui/material/TablePagination';
 import Accordion from "./Accordion";
 import { getProduct } from "../../Service/user/apiMethod";
 import { useEffect, useState } from "react";
@@ -7,12 +8,15 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 
+const rowsPerPageOptions = [5, 10, 25];
+
 const Content = () => {
 
 
   const [productData, setProductData] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
-
+  const [page, setPage] = useState(2);
+  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
   const navigate=useNavigate()
   const search = useSelector((state) => state.search);
   useEffect(() => {
@@ -37,7 +41,19 @@ const Content = () => {
      
     }
   };
-console.log(search,"hjdfdj");
+
+
+
+  const handleChangePage = ( newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+
   useEffect(() => {
     const debounce = setTimeout(() => {
       const filtered = productData.filter((productValue) =>
@@ -109,6 +125,16 @@ console.log(search,"hjdfdj");
             </div>
           ))}
         </div>
+
+        <TablePagination
+        rowsPerPageOptions={rowsPerPageOptions}
+        component="div"
+        count={filteredRows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       </div>
     </div>
   );
