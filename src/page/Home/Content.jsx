@@ -90,7 +90,7 @@ const Content = () => {
               <a href="#">
                 <img
                   className="p-4 rounded-t-lg"
-                  src={image}
+                  src={value.image[0]}
                   alt="product image"
                 />
               </a>
