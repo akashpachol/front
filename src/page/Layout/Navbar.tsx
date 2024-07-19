@@ -18,6 +18,8 @@ const Navbar = () => {
   const menuDropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] =useState(false);
 
+  const [searchQuery,setSearchQuery]=useState('')
+
   const toggleDrawer = (open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
@@ -25,12 +27,14 @@ const Navbar = () => {
 
     setIsOpen(open);
   };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
 
-
-  const handleDropdownToggle = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
 
   const handleMenuDropdownToggle = () => {
     // Toggle the menuDropdown state
@@ -52,17 +56,16 @@ const Navbar = () => {
     }
   };
 
-  const handleSubmit = () => {
 
-    navigate("/login");
+
+
+
+
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    
   };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   return (
 
@@ -112,8 +115,9 @@ const Navbar = () => {
              
               <div className="hidden sm:ml-6 md:block  md:w-4/5">
                 <div className="relative flex  ">
-                 <input type="text" className="shadow appearance-none border rounded-xl w-3/4 py-3 px-3 text-gray-700 leading-tight"  placeholder="search anything"/>
-                 <button type="button" className="absolute md:right-14 lg:right-20  action_button  ">Yellow</button>
+                 <input type="text" className="shadow appearance-none border rounded-xl w-3/4 py-3 px-3 text-gray-700 leading-tight"  placeholder="search anything"        value={searchQuery}
+                 onChange={handleSearchChange}/>
+                 <button type="button" className="absolute md:right-14 lg:right-20  action_button  ">submit</button>
 
                 
                 </div>

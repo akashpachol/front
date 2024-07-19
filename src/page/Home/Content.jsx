@@ -4,12 +4,17 @@ import Accordion from "./Accordion";
 import { getProduct } from "../../Service/user/apiMethod";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 
 const Content = () => {
-  const navigate=useNavigate()
+
 
   const [productData, setProductData] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+
+  const navigate=useNavigate()
+  const search = useSelector((state) => state.search);
   useEffect(() => {
     getDetails();
   }, []);
@@ -21,7 +26,8 @@ const Content = () => {
       if (response.data) {
         setProductData(response.data);
 
-   
+        setFilteredRows(response.data);
+
       } else {
     console.log('something wrong');
     
@@ -32,6 +38,20 @@ const Content = () => {
     }
   };
 
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      const filtered = productData.filter((productValue) =>
+        Object.values(productValue).some((value) =>
+          value && value.toString().toLowerCase().includes(search.toLowerCase())
+        )
+      );
+      setFilteredRows(filtered);
+    }, 1000);
+
+    return () => clearTimeout(debounce);
+  }, [ productData,search]);
+
+ 
 
 
   return (
@@ -42,7 +62,7 @@ const Content = () => {
 
       <div className="w-4/5   p-5 ">
         <div className="grid grid-cols-3 gap-4 p-4">
-          {productData.map((value) => (
+          {filteredRows.map((value) => (
             <div
               key={value}
               className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
